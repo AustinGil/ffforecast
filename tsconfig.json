@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ESNEXT",
+    "lib": [
+      "ESNEXT",
+    ],
+    "allowJs": true,
+    "checkJs": true,
+    "moduleResolution": "node",
+    "alwaysStrict": true,
+  },
+}
