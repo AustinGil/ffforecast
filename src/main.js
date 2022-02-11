@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import { httpRequest } from 'http-request';
 
 /**
@@ -70,11 +69,10 @@ function formatDate(date, options) {
 }
 
 /**
- * @param request
+ * @param {EW.IngressClientRequest} request
  */
 export async function responseProvider(request) {
-  // const city = 'Portland';
-  const city = faker.address.city();
+  const city = request.userLocation.city;
   const weather = await getWeatherForCity(city);
 
   return `<!DOCTYPE html>
@@ -90,14 +88,16 @@ export async function responseProvider(request) {
     <body>
       <main>
         <h1>Friendly, Fast Forecast</h1>
-        ${weather.cod !== 200
+        ${
+    weather.cod !== 200
       ? `<p>${weather.message}: ${city}</p>`
       : `<h2>Current weather for ${city} ${formatDate(
         weather.dt * 1000
       )}</h2>
         <p>
-            <img src="http://openweathermap.org/img/wn/${weather.weather[0].icon
-      }@2x.png" alt="${weather.weather[0].description}"/>
+            <img src="http://openweathermap.org/img/wn/${
+    weather.weather[0].icon
+    }@2x.png" alt="${weather.weather[0].description}"/>
             ${weather.weather[0].description} | ${weather.main.temp}℉
           </p>
           <table>
@@ -128,17 +128,17 @@ export async function responseProvider(request) {
             <tr>
               <th align="left">Sunrise</th>
               <td>${formatDate(weather.sys.sunrise * 1000, {
-        timeStyle: 'short',
-      })}</td>
+                timeStyle: 'short',
+              })}</td>
             </tr>
             <tr>
               <th align="left">Sunset</th>
               <td>${formatDate(weather.sys.sunset * 1000, {
-        timeStyle: 'short',
-      })}</td>
+                timeStyle: 'short',
+              })}</td>
             </tr>
           </table>`
-    }
+        }
       </main>
     </body>
   </html>`;
