@@ -1,62 +1,4 @@
-import { httpRequest } from 'http-request';
-
-/**
- * @typedef {{
- * cod: number
- * coord?: {
- *  lon: number,
- *  lat: number
- * },
- * weather?: Array<{
- *  id: number,
- *  main: string,
- *  description: string,
- *  icon: string
- * }>,
- * base?: string,
- * main?: {
- *  temp: number,
- *  feels_like: number,
- *  temp_min: number,
- *  temp_max: number,
- *  pressure: number,
- *  humidity: number
- * },
- * visibility?: number,
- * wind?: {
- *  speed: number,
- *  deg: number
- * },
- * clouds?: {
- *  all: number
- * },
- * dt?: number,
- * sys?: {
- *  type: number,
- *  id: number,
- *  country: string,
- *  sunrise: number,
- *  sunset: number
- * },
- * timezone?: number,
- * id?: number,
- * name?: string,
- * message?: string
- * }} OpenWeatherMapResponse
- */
-
-/**
- * @param {string} city
- * @returns {Promise<OpenWeatherMapResponse>}
- */
-async function getWeatherForCity(city) {
-  const OPENWEATHER_API_KEY = process.env.PMUSER_OPENWEATHER_API_KEY;
-  const response = await httpRequest(
-    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${OPENWEATHER_API_KEY}&units=imperial`
-  );
-  const json = await response.json();
-  return json;
-}
+import createApi from './create-api.js';
 
 /**
  * @param {Date|number|string} date
@@ -73,7 +15,15 @@ function formatDate(date, options) {
  */
 export async function responseProvider(request) {
   const city = request.userLocation.city;
-  const weather = await getWeatherForCity(city);
+  const OPENWEATHER_API_KEY = request.getVariable('PMUSER_OPENWEATHER_API_KEY');
+  const api = createApi(OPENWEATHER_API_KEY);
+
+  const currentWeather = await api.currentWeather({
+    q: city,
+  });
+  const forecast = await api.forecast({
+    q: city,
+  });
 
   return `<!DOCTYPE html>
   <html lang="en">
@@ -89,56 +39,66 @@ export async function responseProvider(request) {
       <main>
         <h1>Friendly, Fast Forecast</h1>
         ${
-    weather.cod !== 200
-      ? `<p>${weather.message}: ${city}</p>`
+    Number(currentWeather.cod) !== 200
+      ? `<p>${currentWeather.message}: ${city}</p>`
       : `<h2>Current weather for ${city} ${formatDate(
-        weather.dt * 1000
-      )}</h2>
+              currentWeather.dt * 1000
+            )}</h2>
         <p>
             <img src="http://openweathermap.org/img/wn/${
-    weather.weather[0].icon
-    }@2x.png" alt="${weather.weather[0].description}"/>
-            ${weather.weather[0].description} | ${weather.main.temp}℉
+    currentWeather.weather[0].icon
+    }@2x.png" alt="${currentWeather.weather[0].description}"/>
+            ${currentWeather.weather[0].description} | ${currentWeather.main.temp
+              }℉
           </p>
           <table>
             <tr>
               <th align="left">Feels Like</th>
-              <td>${weather.main.feels_like}℉</td>
+              <td>${currentWeather.main.feels_like}℉</td>
             </tr>
             <tr>
               <th align="left">Min</th>
-              <td>${weather.main.temp_min}℉</td>
+              <td>${currentWeather.main.temp_min}℉</td>
             </tr>
             <tr>
               <th align="left">Max</th>
-              <td>${weather.main.temp_max}℉</td>
+              <td>${currentWeather.main.temp_max}℉</td>
             </tr>
             <tr>
               <th align="left">Wind Speed</th>
-              <td>${weather.wind.speed} mph</td>
+              <td>${currentWeather.wind.speed} mph</td>
             </tr>
             <tr>
               <th align="left">Wind Direction</th>
-              <td>${weather.wind.deg}°</td>
+              <td>${currentWeather.wind.deg}°</td>
             </tr>
             <tr>
               <th align="left">Cloudiness</th>
-              <td>${weather.clouds.all}%</td>
+              <td>${currentWeather.clouds.all}%</td>
             </tr>
             <tr>
               <th align="left">Sunrise</th>
-              <td>${formatDate(weather.sys.sunrise * 1000, {
+              <td>${formatDate(currentWeather.sys.sunrise * 1000, {
                 timeStyle: 'short',
               })}</td>
             </tr>
             <tr>
               <th align="left">Sunset</th>
-              <td>${formatDate(weather.sys.sunset * 1000, {
+              <td>${formatDate(currentWeather.sys.sunset * 1000, {
                 timeStyle: 'short',
               })}</td>
             </tr>
           </table>`
         }
+
+        ${
+    Number(forecast.cod) !== 200
+      ? ''
+      : `<h2>5 Day Forecast</h2>
+        <pre>${JSON.stringify(forecast, undefined, 2)}</pre>
+        `
+    }
+        <pre>${JSON.stringify(forecast, undefined, 2)}</pre>
       </main>
     </body>
   </html>`;
