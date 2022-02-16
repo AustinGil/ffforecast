@@ -14,16 +14,22 @@ function formatDate(date, options) {
  * @param {EW.IngressClientRequest} request
  */
 export async function responseProvider(request) {
-  const city = request.userLocation.city;
   const OPENWEATHER_API_KEY = request.getVariable('PMUSER_OPENWEATHER_API_KEY');
-  const api = createApi(OPENWEATHER_API_KEY);
+  const GEOAPIFY_API_KEY = request.getVariable('PMUSER_GEOAPIFY_API_KEY');
+  const api = createApi({
+    openWeatherApiKey: OPENWEATHER_API_KEY,
+    geoapifyApiKey: GEOAPIFY_API_KEY,
+  });
 
-  const currentWeather = await api.currentWeather({
-    q: city,
-  });
-  const forecast = await api.forecast({
-    q: city,
-  });
+  const city = request.userLocation.city;
+
+  const geolocation = await api.getGeolocation(city);
+
+  let weatherData;
+  if (geolocation.features?.length > 0) {
+    const { lat, lon } = geolocation.features[0].properties;
+    weatherData = await api.oneCall({ lat, lon });
+  }
 
   return `<!DOCTYPE html>
   <html lang="en">
@@ -38,67 +44,95 @@ export async function responseProvider(request) {
     <body>
       <main>
         <h1>Friendly, Fast Forecast</h1>
+
+        <pre>${JSON.stringify(weatherData, undefined, 2)}</pre>
         ${
-    Number(currentWeather.cod) !== 200
-      ? `<p>${currentWeather.message}: ${city}</p>`
+    !weatherData
+      ? `<p>No weather data for: ${city}</p>`
       : `<h2>Current weather for ${city} ${formatDate(
-              currentWeather.dt * 1000
+              weatherData.current.dt * 1000
             )}</h2>
         <p>
             <img src="http://openweathermap.org/img/wn/${
-    currentWeather.weather[0].icon
-    }@2x.png" alt="${currentWeather.weather[0].description}"/>
-            ${currentWeather.weather[0].description} | ${currentWeather.main.temp
+    weatherData.current.weather[0].icon
+    }@2x.png" alt="${weatherData.current.weather[0].description}"/>
+            ${weatherData.current.weather[0].description} | ${weatherData.current.temp
               }℉
           </p>
           <table>
             <tr>
               <th align="left">Feels Like</th>
-              <td>${currentWeather.main.feels_like}℉</td>
+              <td>${weatherData.current.feels_like}℉</td>
             </tr>
             <tr>
               <th align="left">Min</th>
-              <td>${currentWeather.main.temp_min}℉</td>
+              <td>${weatherData.current.temp_min}℉</td>
             </tr>
             <tr>
               <th align="left">Max</th>
-              <td>${currentWeather.main.temp_max}℉</td>
+              <td>${weatherData.current.temp_max}℉</td>
             </tr>
             <tr>
               <th align="left">Wind Speed</th>
-              <td>${currentWeather.wind.speed} mph</td>
+              <td>${weatherData.current.wind_speed} mph</td>
             </tr>
             <tr>
               <th align="left">Wind Direction</th>
-              <td>${currentWeather.wind.deg}°</td>
+              <td>${weatherData.current.wind_deg}°</td>
             </tr>
             <tr>
               <th align="left">Cloudiness</th>
-              <td>${currentWeather.clouds.all}%</td>
+              <td>${weatherData.current.clouds.all}%</td>
             </tr>
             <tr>
               <th align="left">Sunrise</th>
-              <td>${formatDate(currentWeather.sys.sunrise * 1000, {
+              <td>${formatDate(weatherData.current.sunrise * 1000, {
                 timeStyle: 'short',
               })}</td>
             </tr>
             <tr>
               <th align="left">Sunset</th>
-              <td>${formatDate(currentWeather.sys.sunset * 1000, {
+              <td>${formatDate(weatherData.current.sunset * 1000, {
                 timeStyle: 'short',
               })}</td>
             </tr>
-          </table>`
-        }
+          </table>
 
-        ${
-    Number(forecast.cod) !== 200
-      ? ''
-      : `<h2>5 Day Forecast</h2>
-        <pre>${JSON.stringify(forecast, undefined, 2)}</pre>
-        `
-    }
-        <pre>${JSON.stringify(forecast, undefined, 2)}</pre>
+          <h2>Hourly forecast</h2>
+          <div style="max-block-size: 50vh; overflow: auto;">
+            <table>
+            ${weatherData.hourly.map(
+              (hour) => `
+                <tr>
+                  <th align="left">${formatDate(hour.dt * 1000, {
+                dateStyle: 'short',
+                timeStyle: 'short',
+              })}</th>
+              <td>${hour.temp}℉</td>
+                </tr>
+                `
+            )}
+            </table>
+          </div>
+          
+          <h2>Daily forecast</h2>
+          <div style="max-block-size: 50vh; overflow: auto;">
+            <table>
+            ${weatherData.daily.map(
+              (day) => `
+                <tr>
+                  <th align="left">${formatDate(day.dt * 1000, {
+                dateStyle: 'short',
+              })}</th>
+              <td>Min: ${day.temp.min}℉</td>
+              <td>Max: ${day.temp.max}℉</td>
+                </tr>
+                `
+            )}
+            </table>
+          </div>
+          `
+        }
       </main>
     </body>
   </html>`;
