@@ -35,9 +35,16 @@ export async function responseProvider(request) {
     geoapifyApiKey: GEOAPIFY_API_KEY,
   });
 
-  const city = request.userLocation.city;
+  const query = new URLSearchParams(request.query);
 
-  const geolocation = await api.getGeolocation(city);
+  if (query.has('location')) {
+    // Do stuff with location
+  }
+
+  const location = 'portland, oregon';
+  // const location = request.userLocation.city;
+
+  const geolocation = await api.getGeolocation(location);
 
   let weatherData;
   if (geolocation.features?.length > 0) {
@@ -69,6 +76,9 @@ export async function responseProvider(request) {
         .flex {
           display: flex;
         }
+        .flex-grow {
+          flex-grow: 1;
+        }
         .align-center {
           align-items: center;
         }
@@ -78,8 +88,14 @@ export async function responseProvider(request) {
         .min-w-120 {
           min-inline-size: ${120 / 16}rem;
         }
+        .max-w-900 {
+          max-inline-size: ${900 / 16}rem;
+        }
         .o-auto {
           overflow: auto;
+        }
+        .mi-auto {
+          margin-inline: auto;
         }
         ${[0, 4, 8, 12, 16, 32]
           .map((space) => {
@@ -108,6 +124,15 @@ export async function responseProvider(request) {
           --rotate: 0;
           transform: rotate(var(--rotate));
         }
+        .visually-hidden {
+          clip: rect(0 0 0 0);
+          clip-path: inset(50%);
+          height: 1px;
+          overflow: hidden;
+          position: absolute;
+          white-space: nowrap;
+          width: 1px;
+        }
         .icon {
           display: inline-block;
           width: 1em;
@@ -135,16 +160,22 @@ export async function responseProvider(request) {
     </head>
   
     <body>
-      <main class="p-8">
+      <main class="max-w-900 mi-auto p-8">
         <h1 class="mb-8">Freakin' Fast Forecast</h1>
 
+        <form>
+          <label for="location">Location</label>
+          <input id="location" name="location" value="${location}" />
+
+          <button type="submit">Submit</button>
+        </form>
+
         ${
-          // <pre>${JSON.stringify(weatherData, undefined, 2)}</pre>
           !weatherData
-            ? `<p>No weather data for: ${city}</p>`
-            : `<h2 class="mb-32">${city} ${formatDate(
-              weatherData.current.dt * 1000,
-              { dateStyle: 'short', timeStyle: 'short' }
+    ? `<p>No weather data for: ${location}</p>`
+    : `<h2 class="mb-32">${location} ${formatDate(
+      weatherData.current.dt * 1000,
+      { dateStyle: 'short', timeStyle: 'short' }
               )}</h2>
             
             <section class="card mb-32">
@@ -161,26 +192,27 @@ export async function responseProvider(request) {
             </p>
             <table>
               <tr>
-                <th align="left">Feels Like</th>
+                <th align="left"><span aria-hidden="true">🌡</span> Feels Like</th>
                 <td>${weatherData.current.feels_like}°F</td>
               </tr>
               <tr>
-                <th align="left">Wind</th>
+                <th align="left"><span aria-hidden="true">🌬</span> Wind</th>
                 <td>
                 ${weatherData.current.wind_speed} mph
                 
-                <svg class="icon icon-arrow-long-up rotate" style="--rotate: ${weatherData.current.wind_deg
-    }deg;" aria-hidden><use xlink:href="#icon-arrow-long-up"></use></svg>
+                <svg class="icon icon-arrow-long-up rotate" style="--rotate: ${
+    weatherData.current.wind_deg
+                }deg;" aria-hidden="true" alt=""><use xlink:href="#icon-arrow-long-up"></use></svg>
                   
                   ${getWindDirection(weatherData.current.wind_deg)}
                 </td>
               </tr>
               <tr>
-                <th align="left">Cloudiness</th>
+                <th align="left"><span aria-hidden="true">☁</span> Cloudiness</th>
                 <td>${weatherData.current.clouds}%</td>
               </tr>
               <tr>
-                <th align="left">UV Index</th>
+                <th align="left"><span aria-hidden="true">🕶</span> UV Index</th>
                 <td>${weatherData.current.uvi}</td>
               </tr>
             </table>
@@ -206,7 +238,8 @@ export async function responseProvider(request) {
                 <span class="h5 flex justify-between align-center">
                   <b>${Math.round(hour.temp)}°F</b>
                   <img
-                    src="http://openweathermap.org/img/wn/${hour.weather[0].icon
+                    src="http://openweathermap.org/img/wn/${
+                    hour.weather[0].icon
                     }@2x.png"
                     alt="${hour.weather[0].description}"
                     loading="${index < 3 ? 'eager' : 'lazy'}"
@@ -217,19 +250,31 @@ export async function responseProvider(request) {
 
                 <table>
                   <tr>
-                    <th align="left">☁</th>
+                    <th align="left">
+                      <span aria-hidden="true" title="Cloudiness">☁</span>
+                      <span class="visually-hidden">Cloudiness</span>
+                    </th>
                     <td>${hour.clouds}%</td>
                   </tr>
                   <tr>
-                    <th align="left">🌧</th>
+                    <th align="left">
+                      <span aria-hidden="true" title="Precipitation">🌧</span>
+                      <span class="visually-hidden">Precipitation</span>
+                    </th>
                     <td>${hour.pop}%</td>
                   </tr>
                   <tr>
-                    <th align="left">💦</th>
+                    <th align="left">
+                      <span aria-hidden="true" title="Humidity">🥵</span>
+                      <span class="visually-hidden">Humidity</span>
+                    </th>
                     <td>${hour.humidity}%</td>
                   </tr>
                   <tr>
-                    <th align="left">🕶</th>
+                    <th align="left">
+                      <span aria-hidden="true" title="UV Index">🕶</span>
+                      <span class="visually-hidden">UV Index</span>
+                    </th>
                     <td>${hour.uvi}%</td>
                   </tr>
                 </table>
@@ -244,20 +289,21 @@ export async function responseProvider(request) {
             <div class="flex gap-8 o-auto pb-8">
               ${weatherData.daily
       .map((day, index) => {
-        return `<div class="min-w-120">
+                  return `<div class="flex-grow min-w-120">
                           <span class="h4">
                           <b>
                             ${formatDate(day.dt * 1000, {
-          dateStyle: 'short',
-        })}
+                              dateStyle: 'short',
+                            })}
                           </b>
                           </span>
 
                           <span class="h5 flex justify-between align-center">
                             <b>${Math.round(day.temp.day)}°F</b>
                             <img
-                              src="http://openweathermap.org/img/wn/${day.weather[0].icon
-          }@2x.png"
+                              src="http://openweathermap.org/img/wn/${
+                    day.weather[0].icon
+                              }@2x.png"
                               alt="${day.weather[0].description}"
                               loading="${index < 3 ? 'eager' : 'lazy'}"
                               width="64"
@@ -266,23 +312,38 @@ export async function responseProvider(request) {
                           </span>
                           <table>
                             <tr>
-                              <th align="left">🔺</th>
+                              <th align="left">
+                                <span aria-hidden="true" title="High">🔺</span>
+                                <span class="visually-hidden">High</span>
+                              </th>
                               <td>${day.temp.max}°F</td>
                             </tr>
                             <tr>
-                              <th align="left">🔻</th>
+                              <th align="left">
+                                <span aria-hidden="true" title="Low">🔻</span>
+                                <span class="visually-hidden">Low</span>
+                              </th>
                               <td>${day.temp.min}°F</td>
                             </tr>
                             <tr>
-                              <th align="left">☁</th>
+                              <th align="left">
+                                <span aria-hidden="true" title="Cloudiness">☁</span>
+                                <span class="visually-hidden">Cloudiness</span>
+                              </th>
                               <td>${day.clouds}%</td>
                             </tr>
                             <tr>
-                              <th align="left">🌧</th>
+                              <th align="left">
+                                <span aria-hidden="true" title="Precipitation">🌧</span>
+                                <span class="visually-hidden">Precipitation</span>
+                              </th>
                               <td>${day.pop}%</td>
                             </tr>
                             <tr>
-                              <th align="left">🕶</th>
+                              <th align="left">
+                                <span aria-hidden="true" title="UV Index">🕶</span>
+                                <span class="visually-hidden">UV Index</span>
+                              </th>
                               <td>${day.uvi}°F</td>
                             </tr>
                           </table>
