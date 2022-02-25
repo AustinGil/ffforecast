@@ -18,7 +18,10 @@
   },
   "dependencies": {
     "@types/akamai-edgeworkers": "^1.0.8",
+    "cookies": "file:builtins/cookies",
+    "create-response": "file:builtins/create-response",
     "dotenv": "^16.0.0",
-    "node-fetch": "^3.2.0"
+    "node-fetch": "^3.2.0",
+    "url-search-params": "file:builtins/url-search-params"
   }
 }

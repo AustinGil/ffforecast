@@ -1,3 +1,6 @@
+import URLSearchParams from 'url-search-params';
+import { createResponse } from 'create-response';
+// import { Cookies, SetCookie } from 'cookies';
 import createApi from './create-api.js';
 
 /**
@@ -34,15 +37,27 @@ export async function responseProvider(request) {
     openWeatherApiKey: OPENWEATHER_API_KEY,
     geoapifyApiKey: GEOAPIFY_API_KEY,
   });
+  const headers = {};
+
+  console.log({ cookie: request.getHeader('Cookie') });
+
+  // let cookies = new Cookies(request.getHeader('Cookie'));
 
   const query = new URLSearchParams(request.query);
 
+  // const { city, state, country } = request.userLocation;
+  // let location = `${city}, ${state}, ${country}`;
+  let location = 'portland, oregon';
+
+  // If user requests new location, update location and cookies
   if (query.has('location')) {
     // Do stuff with location
+    // let cookies = new Cookies(request.getHeader('Cookie'));
+    location = query.get('location');
+    headers['Set-Cookie'] = `location=${location}`;
   }
-
-  const location = 'portland, oregon';
-  // const location = request.userLocation.city;
+  // else if request cookies has location, use that
+  // else, use request userLocation object
 
   const geolocation = await api.getGeolocation(location);
 
@@ -52,7 +67,7 @@ export async function responseProvider(request) {
     weatherData = await api.oneCall({ lat, lon });
   }
 
-  return `<!DOCTYPE html>
+  const body = `<!DOCTYPE html>
   <html lang="en">
     <head>
       <meta charset="UTF-8" />
@@ -364,4 +379,9 @@ export async function responseProvider(request) {
       </svg>
     </body>
   </html>`;
+
+  return createResponse(body, {
+    status: 200,
+    headers: headers,
+  });
 }

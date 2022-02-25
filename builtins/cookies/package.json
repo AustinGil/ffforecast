@@ -1,0 +1,5 @@
+{
+  "name": "cookies",
+  "type": "module",
+  "main": "index.js"
+}

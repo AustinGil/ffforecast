@@ -51,9 +51,10 @@ const app = async (request, response) => {
       resolutionWidth: faker.datatype.number(),
       xhtmlSupportLevel: faker.datatype.number(),
     },
+    /** @param {string} headerKey */
     getHeader: (headerKey) => {
-      const header = response.getHeader(headerKey).toString();
-      return Array.isArray(header) ? header : [header];
+      const header = request.headers[headerKey.toLowerCase()];
+      return header;
     },
     getVariable: (variableKey) => process.env[variableKey],
     host: request.headers.host,
@@ -81,6 +82,11 @@ const app = async (request, response) => {
     let result = worker.responseProvider(ewRequest);
     if (result instanceof Promise) {
       result = await result;
+    }
+    if (result instanceof Object) {
+      response.writeHead(result.status, result.headers);
+      response.end(result.body);
+      return;
     }
     response.end(result);
     return;
