@@ -1,6 +1,6 @@
 import URLSearchParams from 'url-search-params';
 import { createResponse } from 'create-response';
-// import { Cookies, SetCookie } from 'cookies';
+import { Cookies, SetCookie } from 'cookies';
 import createApi from './create-api.js';
 
 /**
@@ -38,26 +38,23 @@ export async function responseProvider(request) {
     geoapifyApiKey: GEOAPIFY_API_KEY,
   });
   const headers = {};
-
-  console.log({ cookie: request.getHeader('Cookie') });
-
-  // let cookies = new Cookies(request.getHeader('Cookie'));
-
   const query = new URLSearchParams(request.query);
+  const cookies = new Cookies(request.getHeader('Cookie'));
 
-  // const { city, state, country } = request.userLocation;
-  // let location = `${city}, ${state}, ${country}`;
-  let location = 'portland, oregon';
-
+  let location = cookies.get('location');
   // If user requests new location, update location and cookies
   if (query.has('location')) {
-    // Do stuff with location
-    // let cookies = new Cookies(request.getHeader('Cookie'));
     location = query.get('location');
-    headers['Set-Cookie'] = `location=${location}`;
+    headers['Set-Cookie'] = new SetCookie({
+      name: 'location',
+      value: location,
+    }).toHeader();
   }
-  // else if request cookies has location, use that
-  // else, use request userLocation object
+  // Fallback to server location if no location is set
+  if (!location) {
+    const { city, region, country } = request.userLocation;
+    location = `${city}, ${region}, ${country}`;
+  }
 
   const geolocation = await api.getGeolocation(location);
 
@@ -87,6 +84,9 @@ export async function responseProvider(request) {
         }
         .relative {
           position: relative;
+        }
+        .grid {
+          display: grid;
         }
         .flex {
           display: flex;
@@ -178,20 +178,21 @@ export async function responseProvider(request) {
       <main class="max-w-900 mi-auto p-8">
         <h1 class="mb-8">Freakin' Fast Forecast</h1>
 
-        <form>
-          <label for="location">Location</label>
-          <input id="location" name="location" value="${location}" />
-
-          <button type="submit">Submit</button>
+        <form class="mb-16">
+          <label for="location">Search Location</label>
+          <div class="flex gap-8">
+            <input id="location" name="location" />
+            <button type="submit">Submit</button>
+          </div>
         </form>
 
         ${
           !weatherData
     ? `<p>No weather data for: ${location}</p>`
-    : `<h2 class="mb-32">${location} ${formatDate(
+    : `<h2 class="grid mb-32">Weather for ${location} <br><span class="h6">${formatDate(
       weatherData.current.dt * 1000,
       { dateStyle: 'short', timeStyle: 'short' }
-              )}</h2>
+    )}</span></h2>
             
             <section class="card mb-32">
               <h3 class="h6 mb-8">Current</h3>

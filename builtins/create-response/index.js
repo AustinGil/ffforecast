@@ -1,18 +1,18 @@
 /**
  * @param {string | ReadableStream} body
  * @param {{
- * status: HTTPStatusCode,
- * headers: import("http").OutgoingHttpHeader,
+ * status: number,
+ * headers: { [key: string]: string },
  * deny_reason: string,
  * }} options
  */
 export function createResponse(body, options) {
-  options = {
+  const response = {
     body: body,
     status: 200,
-    headers: {},
+    // headers: {},
     deny_reason: '',
     ...options,
   };
-  return options;
+  return response;
 }
