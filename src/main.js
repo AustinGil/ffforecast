@@ -121,6 +121,9 @@ export async function responseProvider(request) {
           .m-${space} {
             margin: ${space / 16}rem;
           }
+          .mt-${space} {
+            margin-block-start: ${space / 16}rem;
+          }
           .mb-${space} {
             margin-block-end: ${space / 16}rem;
           }
@@ -196,7 +199,7 @@ export async function responseProvider(request) {
             
             <section class="card mb-32">
               <h3 class="h6 mb-8">Current</h3>
-            <p class="flex align-center justify-between m-0">
+              <p class="flex align-center justify-between m-0">
               <span>
                 <span class="h1">${weatherData.current.temp}°F</span>
                 <br>
@@ -204,33 +207,35 @@ export async function responseProvider(request) {
               </span>
               <img src="http://openweathermap.org/img/wn/${
                 weatherData.current.weather[0].icon
-    }@2x.png" alt="${weatherData.current.weather[0].description}"/>
+    }@2x.png" alt="${weatherData.current.weather[0].description
+              }" width="100" height="100"/>
             </p>
-            <table>
-              <tr>
-                <th align="left"><span aria-hidden="true">🌡</span> Feels Like</th>
-                <td>${weatherData.current.feels_like}°F</td>
-              </tr>
-              <tr>
-                <th align="left"><span aria-hidden="true">🌬</span> Wind</th>
-                <td>
-                ${weatherData.current.wind_speed} mph
-                
-                <svg class="icon icon-arrow-long-up rotate" style="--rotate: ${
-    weatherData.current.wind_deg
-                }deg;" aria-hidden="true" alt=""><use xlink:href="#icon-arrow-long-up"></use></svg>
+            <table role="table" class="mt-0">
+              <tbody role="rowgroup">
+                <tr role="row">
+                  <th scope="row" role="rowheader" align="left"><span aria-hidden="true">🌡</span> Feels Like</th>
+                  <td role="cell">${weatherData.current.feels_like}°F</td>
+                </tr>
+                <tr role="row">
+                  <th scope="row" role="rowheader" align="left"><span aria-hidden="true">🌬</span> Wind</th>
+                  <td role="cell">
+                  ${weatherData.current.wind_speed} mph
                   
-                  ${getWindDirection(weatherData.current.wind_deg)}
-                </td>
-              </tr>
-              <tr>
-                <th align="left"><span aria-hidden="true">☁</span> Cloudiness</th>
-                <td>${weatherData.current.clouds}%</td>
-              </tr>
-              <tr>
-                <th align="left"><span aria-hidden="true">🕶</span> UV Index</th>
-                <td>${weatherData.current.uvi}</td>
-              </tr>
+                  <svg class="icon icon-arrow-long-up rotate" style="--rotate: ${weatherData.current.wind_deg
+    }deg;" aria-hidden="true" alt=""><use xlink:href="#icon-arrow-long-up"></use></svg>
+                    
+                    ${getWindDirection(weatherData.current.wind_deg)}
+                  </td>
+                </tr>
+                <tr role="row">
+                  <th scope="row" role="rowheader" align="left"><span aria-hidden="true">☁</span> Cloudiness</th>
+                  <td role="cell">${weatherData.current.clouds}%</td>
+                </tr>
+                <tr role="row">
+                  <th scope="row" role="rowheader" align="left"><span aria-hidden="true">🕶</span> UV Index</th>
+                  <td role="cell">${weatherData.current.uvi}</td>
+                </tr>
+              </tbody>
             </table>
           </section>
 
@@ -247,11 +252,11 @@ export async function responseProvider(request) {
                 })}
                 </small>
                 <br>
-                <span class="h4"><b>${formatDate(hour.dt * 1000, {
+                <h4><b>${formatDate(hour.dt * 1000, {
                   timeStyle: 'short',
-                })}</b></span>
-                <br>
-                <span class="h5 flex justify-between align-center">
+                })}</b></h4>
+                
+                <p class="h5 flex justify-between align-center mt-0">
                   <b>${Math.round(hour.temp)}°F</b>
                   <img
                     src="http://openweathermap.org/img/wn/${
@@ -262,37 +267,39 @@ export async function responseProvider(request) {
                     width="64"
                     height="64"
                   />
-                </span>
+                </p>
 
-                <table>
-                  <tr>
-                    <th align="left">
-                      <span aria-hidden="true" title="Cloudiness">☁</span>
-                      <span class="visually-hidden">Cloudiness</span>
-                    </th>
-                    <td>${hour.clouds}%</td>
-                  </tr>
-                  <tr>
-                    <th align="left">
-                      <span aria-hidden="true" title="Precipitation">🌧</span>
-                      <span class="visually-hidden">Precipitation</span>
-                    </th>
-                    <td>${hour.pop}%</td>
-                  </tr>
-                  <tr>
-                    <th align="left">
-                      <span aria-hidden="true" title="Humidity">🥵</span>
-                      <span class="visually-hidden">Humidity</span>
-                    </th>
-                    <td>${hour.humidity}%</td>
-                  </tr>
-                  <tr>
-                    <th align="left">
-                      <span aria-hidden="true" title="UV Index">🕶</span>
-                      <span class="visually-hidden">UV Index</span>
-                    </th>
-                    <td>${hour.uvi}%</td>
-                  </tr>
+                <table role="table" class="mt-0">
+                  <tbody role="rowgroup">
+                    <tr role="row">
+                      <th scope="row" role="rowheader" align="left">
+                        <span aria-hidden="true" title="Cloudiness">☁</span>
+                        <span class="visually-hidden">Cloudiness</span>
+                      </th>
+                      <td role="cell">${hour.clouds}%</td>
+                    </tr>
+                    <tr role="row">
+                      <th scope="row" role="rowheader" align="left">
+                        <span aria-hidden="true" title="Precipitation">🌧</span>
+                        <span class="visually-hidden">Precipitation</span>
+                      </th>
+                      <td role="cell">${hour.pop}%</td>
+                    </tr>
+                    <tr role="row">
+                      <th scope="row" role="rowheader" align="left">
+                        <span aria-hidden="true" title="Humidity">🥵</span>
+                        <span class="visually-hidden">Humidity</span>
+                      </th>
+                      <td role="cell">${hour.humidity}%</td>
+                    </tr>
+                    <tr role="row">
+                      <th scope="row" role="rowheader" align="left">
+                        <span aria-hidden="true" title="UV Index">🕶</span>
+                        <span class="visually-hidden">UV Index</span>
+                      </th>
+                      <td role="cell">${hour.uvi}%</td>
+                    </tr>
+                  </tbody>
                 </table>
               </div>`;
                 })
@@ -306,15 +313,11 @@ export async function responseProvider(request) {
               ${weatherData.daily
       .map((day, index) => {
                   return `<div class="flex-grow min-w-120">
-                          <span class="h4">
-                          <b>
-                            ${formatDate(day.dt * 1000, {
-                              dateStyle: 'short',
-                            })}
-                          </b>
-                          </span>
+                          <h4><b>${formatDate(day.dt * 1000, {
+                            dateStyle: 'short',
+                          })}</b></h4>
 
-                          <span class="h5 flex justify-between align-center">
+                          <p class="h5 flex justify-between align-center mt-0">
                             <b>${Math.round(day.temp.day)}°F</b>
                             <img
                               src="http://openweathermap.org/img/wn/${
@@ -325,43 +328,45 @@ export async function responseProvider(request) {
                               width="64"
                               height="64"
                             />
-                          </span>
-                          <table>
-                            <tr>
-                              <th align="left">
-                                <span aria-hidden="true" title="High">🔺</span>
-                                <span class="visually-hidden">High</span>
-                              </th>
-                              <td>${day.temp.max}°F</td>
-                            </tr>
-                            <tr>
-                              <th align="left">
-                                <span aria-hidden="true" title="Low">🔻</span>
-                                <span class="visually-hidden">Low</span>
-                              </th>
-                              <td>${day.temp.min}°F</td>
-                            </tr>
-                            <tr>
-                              <th align="left">
-                                <span aria-hidden="true" title="Cloudiness">☁</span>
-                                <span class="visually-hidden">Cloudiness</span>
-                              </th>
-                              <td>${day.clouds}%</td>
-                            </tr>
-                            <tr>
-                              <th align="left">
-                                <span aria-hidden="true" title="Precipitation">🌧</span>
-                                <span class="visually-hidden">Precipitation</span>
-                              </th>
-                              <td>${day.pop}%</td>
-                            </tr>
-                            <tr>
-                              <th align="left">
-                                <span aria-hidden="true" title="UV Index">🕶</span>
-                                <span class="visually-hidden">UV Index</span>
-                              </th>
-                              <td>${day.uvi}°F</td>
-                            </tr>
+                          </p>
+                          <table role="table" class="mt-0">
+                            <tbody role="rowgroup">
+                              <tr role="row">
+                                <th scope="row" role="rowheader" align="left">
+                                  <span aria-hidden="true" title="High">🔺</span>
+                                  <span class="visually-hidden">High</span>
+                                </th>
+                                <td role="cell">${day.temp.max}°F</td>
+                              </tr>
+                              <tr role="row">
+                                <th scope="row" role="rowheader" align="left">
+                                  <span aria-hidden="true" title="Low">🔻</span>
+                                  <span class="visually-hidden">Low</span>
+                                </th>
+                                <td role="cell">${day.temp.min}°F</td>
+                              </tr>
+                              <tr role="row">
+                                <th scope="row" role="rowheader" align="left">
+                                  <span aria-hidden="true" title="Cloudiness">☁</span>
+                                  <span class="visually-hidden">Cloudiness</span>
+                                </th>
+                                <td role="cell">${day.clouds}%</td>
+                              </tr>
+                              <tr role="row">
+                                <th scope="row" role="rowheader" align="left">
+                                  <span aria-hidden="true" title="Precipitation">🌧</span>
+                                  <span class="visually-hidden">Precipitation</span>
+                                </th>
+                                <td role="cell">${day.pop}%</td>
+                              </tr>
+                              <tr role="row">
+                                <th scope="row" role="rowheader" align="left">
+                                  <span aria-hidden="true" title="UV Index">🕶</span>
+                                  <span class="visually-hidden">UV Index</span>
+                                </th>
+                                <td role="cell">${day.uvi}°F</td>
+                              </tr>
+                            </tbody>
                           </table>
                         </div>`;
                 })
