@@ -102,8 +102,11 @@ export class Cookies {
     }
   ) {
     const cookies = [];
-    for (const cookie of cookiesHeader.split('; ')) {
-      const [name, value] = cookie.split('=');
+    for (const cookie of cookiesHeader.split(';')) {
+      let [name, value] = cookie.split('=');
+      name = name.trim();
+      value = value ? value.trim() : value;
+      if (!name) continue; // in case of trailing semicolon
       cookies.push([name, options.decode(value)]);
     }
     this.#cookies = cookies;
@@ -148,6 +151,6 @@ export class Cookies {
     const encoded = this.#cookies.map((cookie) => {
       return `${cookie[0]}=${options.encode(cookie[1])}`;
     });
-    return encoded.join('; ');
+    return encoded.join('; ') + ';';
   }
 }

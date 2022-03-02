@@ -10,7 +10,7 @@ export function createResponse(body, options) {
   const response = {
     body: body,
     status: 200,
-    // headers: {},
+    headers: {},
     deny_reason: '',
     ...options,
   };
