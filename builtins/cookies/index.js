@@ -5,12 +5,19 @@ export class SetCookie {
    */
   // eslint-disable-next-line unicorn/no-object-as-default-parameter
   constructor(cookieHeader = {}, options = { decode: (v) => v }) {
+    const decode = options.decode || ((v) => v);
     if (typeof cookieHeader === 'string') {
       for (const pair of cookieHeader.split(';')) {
-        let [key, value] = pair.split('=');
-        key = key.trim().toLowerCase();
+        // Grab each attribute in the cookie string as lowercase without extra spaces
+        let [name, value] = pair.split('=');
+        name = name.trim();
         value = value ? value.trim() : value;
-        if (!key) continue; // in case of trailing semicolon
+
+        // break early in case of trailing semicolon (eg. "foo=bar; ")
+        if (!name) continue;
+
+        const key = name.toLowerCase();
+
         switch (key) {
           case 'max-age': {
             this.maxAge = Number(value);
@@ -37,14 +44,14 @@ export class SetCookie {
             if (['domain', 'path'].includes(key)) {
               this[key] = value;
             } else {
-              this.name = key;
-              this.value = options.decode(value);
+              this.name = name;
+              this.value = decode(value);
             }
         }
       }
     } else {
       Object.assign(this, cookieHeader);
-      this.value = options.decode(this.value);
+      this.value = decode(this.value);
     }
   }
 
