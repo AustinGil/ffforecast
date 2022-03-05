@@ -6,4 +6,12 @@ if (!globalThis.fetch) {
   globalThis.fetch = nodeFetch;
 }
 
-export const httpRequest = (url) => fetch(url);
+/**
+ * @param {string} url
+ * @param {{
+ * method: "POST" | "GET" | "PUT" | "DELETE" | "HEAD" | "OPTIONS" | "PATCH" | "TRACE" | "CONNECT",
+ * headers: Record<string, string>,
+ * body: string,
+ * }} options
+ */
+export const httpRequest = (url, options) => fetch(url);

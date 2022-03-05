@@ -10,6 +10,7 @@ const randomDenyReason = faker.random.words();
 
 describe('createResponse', () => {
   test.concurrent('generates default values', () => {
+    // @ts-ignore
     const result = createResponse();
     expect(result).toMatchObject({
       body: undefined,

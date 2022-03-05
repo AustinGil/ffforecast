@@ -7,6 +7,11 @@ const value1 = faker.random.word();
 const name2 = faker.random.word();
 const value2 = faker.random.word();
 const cookieString = `${name1}=${value1}; ${name2}=${value2};`;
+const randomDomain = faker.internet.domainName();
+const randomPath = `/${faker.internet.domainWord()}`;
+const randomExpires = faker.date.future();
+const randomMaxAge = faker.datatype.number();
+const randomSameSite = faker.helpers.randomize(['Strict', 'Lax', 'None']);
 
 describe('Cookies', () => {
   describe('Cookies.toHeader()', () => {
@@ -105,7 +110,6 @@ describe('SetCookie', () => {
       expect(cookie.toHeader()).toBe(`${name1}=${value1};`);
     });
     test.concurrent('sets the cookie domain', () => {
-      const randomDomain = faker.internet.domainName();
       const cookie = new SetCookie({
         name: name1,
         value: value1,
@@ -116,7 +120,6 @@ describe('SetCookie', () => {
       );
     });
     test.concurrent('sets the cookie path', () => {
-      const randomPath = faker.internet.url();
       const cookie = new SetCookie({
         name: name1,
         value: value1,
@@ -125,7 +128,6 @@ describe('SetCookie', () => {
       expect(cookie.toHeader()).toBe(`${name1}=${value1}; Path=${randomPath};`);
     });
     test.concurrent('sets the cookie expires', () => {
-      const randomExpires = faker.date.future();
       const cookie = new SetCookie({
         name: name1,
         value: value1,
@@ -136,7 +138,6 @@ describe('SetCookie', () => {
       );
     });
     test.concurrent('sets the cookie max-age', () => {
-      const randomMaxAge = faker.datatype.number();
       const cookie = new SetCookie({
         name: name1,
         value: value1,
@@ -175,14 +176,14 @@ describe('SetCookie', () => {
       expect(cookie2.toHeader()).toBe(`${name1}=${value1};`);
     });
     test.concurrent('sets the cookie same-site', () => {
-      const sameSite = faker.helpers.randomize(['Strict', 'Lax', 'None']);
       const cookie1 = new SetCookie({
         name: name1,
         value: value1,
-        sameSite: sameSite,
+        // @ts-ignore
+        sameSite: randomSameSite,
       });
       expect(cookie1.toHeader()).toBe(
-        `${name1}=${value1}; SameSite=${sameSite};`
+        `${name1}=${value1}; SameSite=${randomSameSite};`
       );
     });
     test.concurrent('decodes the value on creation', () => {
@@ -216,17 +217,7 @@ describe('SetCookie', () => {
         expect(cookie.toHeader()).toBe(`${name1}=${value1};`);
       }
     );
-    // path = '';
-    // /** @type {Date} */
-    // expires;
-    // /** @type {number} in seconds */
-    // maxAge;
-    // httpOnly = false;
-    // secure = false;
-    // /** @type {'Strict'|'Lax'|'None'} */
-    // sameSite;
     test.concurrent('sets the domain from the cookie string', () => {
-      const randomDomain = faker.internet.domainName();
       const cookie = new SetCookie(
         `${name1}=${value1};Domain=${randomDomain};`
       );
@@ -234,13 +225,87 @@ describe('SetCookie', () => {
         `${name1}=${value1}; Domain=${randomDomain};`
       );
     });
+    test.concurrent('sets the path from the cookie string', () => {
+      const cookie = new SetCookie(`${name1}=${value1};Path=${randomPath};`);
+      expect(cookie.toHeader()).toBe(`${name1}=${value1}; Path=${randomPath};`);
+    });
+    test.concurrent('sets the expires from the cookie string', () => {
+      const cookie = new SetCookie(
+        `${name1}=${value1};Expires=${randomExpires};`
+      );
+      expect(cookie.toHeader()).toBe(
+        `${name1}=${value1}; Expires=${randomExpires.toUTCString()};`
+      );
+    });
+    test.concurrent('sets the max-age from the cookie string', () => {
+      const cookie = new SetCookie(
+        `${name1}=${value1};Max-Age=${randomMaxAge};`
+      );
+      expect(cookie.toHeader()).toBe(
+        `${name1}=${value1}; Max-Age=${randomMaxAge};`
+      );
+    });
+    test.concurrent('sets the httpOnly from the cookie string', () => {
+      const cookie = new SetCookie(`${name1}=${value1};HttpOnly;`);
+      expect(cookie.toHeader()).toBe(`${name1}=${value1}; HttpOnly;`);
+    });
+    test.concurrent('sets the Secure from the cookie string', () => {
+      const cookie = new SetCookie(`${name1}=${value1};Secure;`);
+      expect(cookie.toHeader()).toBe(`${name1}=${value1}; Secure;`);
+    });
+    test.concurrent('sets the SameSite from the cookie string', () => {
+      const cookie = new SetCookie(
+        `${name1}=${value1};SameSite=${randomSameSite};`
+      );
+      expect(cookie.toHeader()).toBe(
+        `${name1}=${value1}; SameSite=${randomSameSite};`
+      );
+    });
   });
-  // describe('SetCookie.toHeader()', () => {
-  //   test.concurrent('prints string of cookie', () => {
-  //     const name = faker.random.word();
-  //     const value = faker.random.word();
-  //     const cookie = new SetCookie(name, value);
-  //     expect(cookie.toHeader()).toBe(`${name}=${value}`);
-  //   });
-  // });
+  describe('SetCookie.toHeader()', () => {
+    test.concurrent('prints the cookie string', () => {
+      const cookie = new SetCookie();
+      cookie.name = name1;
+      cookie.value = value1;
+      cookie.domain = randomDomain;
+      cookie.path = randomPath;
+      cookie.expires = randomExpires;
+      cookie.maxAge = randomMaxAge;
+      cookie.httpOnly = true;
+      cookie.secure = true;
+      // @ts-ignore
+      cookie.sameSite = randomSameSite;
+      expect(cookie.toHeader()).toBe(
+        `${name1}=${value1}; Domain=${randomDomain}; Path=${randomPath}; Expires=${randomExpires.toUTCString()}; Max-Age=${randomMaxAge}; HttpOnly; Secure; SameSite=${randomSameSite};`
+      );
+    });
+    test.concurrent(
+      'returns an empty string if there is no name or value',
+      () => {
+        const cookie1 = new SetCookie();
+        cookie1.domain = randomDomain;
+        cookie1.path = randomPath;
+        cookie1.expires = randomExpires;
+        cookie1.maxAge = randomMaxAge;
+        cookie1.httpOnly = true;
+        cookie1.secure = true;
+        // @ts-ignore
+        cookie1.sameSite = randomSameSite;
+        expect(cookie1.toHeader()).toBe('');
+
+        const cookie2 = new SetCookie();
+        cookie2.name = name1;
+        expect(cookie2.toHeader()).toBe('');
+
+        const cookie3 = new SetCookie();
+        cookie3.value = value1;
+        expect(cookie3.toHeader()).toBe('');
+
+        const cookie4 = new SetCookie();
+        cookie4.name = name1;
+        cookie4.value = value1;
+        expect(cookie4.toHeader()).toBe(`${name1}=${value1};`);
+      }
+    );
+  });
 });
