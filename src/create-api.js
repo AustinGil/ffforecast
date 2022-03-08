@@ -1,4 +1,5 @@
 import { httpRequest } from 'http-request';
+import URLSearchParams from 'url-search-params';
 /**
  * @typedef {import ('./types').OpenWeatherOneCall} OpenWeatherOneCall
  */
