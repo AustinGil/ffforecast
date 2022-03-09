@@ -8,7 +8,7 @@ import createApi from './create-api.js';
  * @param {Intl.DateTimeFormatOptions} [options]
  * @returns {string}
  */
-function formatDate(date, options) {
+export function formatDate(date, options) {
   date = new Date(date);
   return new Intl.DateTimeFormat('en-US', options).format(date);
 }
@@ -16,7 +16,7 @@ function formatDate(date, options) {
 /**
  * @param {number} degree
  */
-function getWindDirection(degree) {
+export function getWindDirection(degree) {
   if (degree >= 337.5 || degree < 22.5) return 'N';
   if (degree < 67.5) return 'NE';
   if (degree < 112.5) return 'E';
@@ -196,7 +196,7 @@ export async function responseProvider(request) {
       weatherData.current.dt * 1000,
       { dateStyle: 'short', timeStyle: 'short' }
     )}</span></h2>
-            
+
             <section class="card mb-32">
               <h3 class="h6 mb-8">Current</h3>
               <p class="flex align-center justify-between m-0">
@@ -221,9 +221,10 @@ export async function responseProvider(request) {
                   <td role="cell">
                   ${weatherData.current.wind_speed} mph
                   
-                  <svg class="icon icon-arrow-long-up rotate" style="--rotate: ${weatherData.current.wind_deg
-    }deg;" aria-hidden="true" alt=""><use xlink:href="#icon-arrow-long-up"></use></svg>
-                    
+                  <svg class="icon icon-arrow-long-up rotate" style="--rotate: ${
+    weatherData.current.wind_deg
+                  }deg;" aria-hidden="true" alt=""><use xlink:href="#icon-arrow-long-up"></use></svg>
+
                     ${getWindDirection(weatherData.current.wind_deg)}
                   </td>
                 </tr>
@@ -306,7 +307,7 @@ export async function responseProvider(request) {
       .join('')}
             </div>
           </section>
-          
+
           <section class="card mb-32">
             <h3 class="h6 mb-8">Daily</h3>
             <div class="flex gap-8 o-auto pb-8">

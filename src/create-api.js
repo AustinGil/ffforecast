@@ -13,7 +13,7 @@ import URLSearchParams from 'url-search-params';
 function createApi({ openWeatherApiKey, geoapifyApiKey }) {
   return {
     /**
-     * @param {object} parameters
+     * @param {object} [parameters]
      * @param {number} [parameters.lat] Latitude
      * @param {number} [parameters.lon] Longitude
      * @param {'metric'|'imperial'|'standard'} [parameters.units]
@@ -21,10 +21,10 @@ function createApi({ openWeatherApiKey, geoapifyApiKey }) {
      * @param {string} [parameters.lang] Language
      */
     oneCall: async function (parameters) {
-      // @ts-ignore
       const query = new URLSearchParams({
         units: 'imperial',
         ...parameters,
+        // @ts-ignore
         appid: openWeatherApiKey,
       });
       const response = await httpRequest(
@@ -41,8 +41,8 @@ function createApi({ openWeatherApiKey, geoapifyApiKey }) {
      * @param {string} text
      */
     getGeolocation: async function (text) {
-      // @ts-ignore
       const query = new URLSearchParams({
+        // @ts-ignore
         text: text,
         apiKey: geoapifyApiKey,
       });
