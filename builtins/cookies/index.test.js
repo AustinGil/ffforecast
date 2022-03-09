@@ -11,7 +11,7 @@ const randomDomain = faker.internet.domainName();
 const randomPath = `/${faker.internet.domainWord()}`;
 const randomExpires = faker.date.future();
 const randomMaxAge = faker.datatype.number();
-const randomSameSite = faker.helpers.randomize(['Strict', 'Lax', 'None']);
+const randomSameSite = faker.random.arrayElement(['Strict', 'Lax', 'None']);
 
 describe('Cookies', () => {
   describe('Cookies.toHeader()', () => {

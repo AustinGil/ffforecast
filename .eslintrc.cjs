@@ -64,6 +64,7 @@ module.exports = {
           'T',
           'Partial',
           'Omit',
+          'const',
           'SubmitEvent',
           'EW',
         ],

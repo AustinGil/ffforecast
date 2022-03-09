@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { createResponse } from './index.js';
 
 const randomBody = faker.random.word();
-const randomStatus = faker.helpers.randomize([200, 400, 500]);
+const randomStatus = faker.random.arrayElement([200, 400, 500]);
 const randomHeaderKey = faker.random.word();
 const randomHeaderValue = faker.random.word();
 const randomDenyReason = faker.random.words();

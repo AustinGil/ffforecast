@@ -35,7 +35,7 @@ const app = async (request, response) => {
       marketingName: faker.random.word(),
       mobileBrowser: faker.random.word(),
       mobileBrowserVersion: faker.datatype.number().toString(),
-      os: faker.helpers.randomize([
+      os: faker.random.arrayElement([
         'Android',
         'iOS',
         'Windows Phone',
