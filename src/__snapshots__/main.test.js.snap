@@ -1,0 +1,232 @@
+// Vitest Snapshot v1
+
+exports[`responseProvider > default UI matches snapshot 1`] = `
+{
+  "body": "<!DOCTYPE html>
+  <html lang=\\"en\\">
+    <head>
+      <meta charset=\\"UTF-8\\" />
+      <meta name=\\"viewport\\" content=\\"width=device-width,initial-scale=1\\" />
+      <title>Freakin' Fast Forecast</title>
+      <link rel=\\"icon\\" href=\\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text x='0' y='14'>🌦</text></svg>\\">
+      <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"https://unpkg.com/bedrocss\\">
+      <style>
+        th, td {
+          padding: 0.25rem;
+        }
+        tr:nth-child(even) {
+          background-color: ButtonFace;
+        }
+        tr:not(:last-child) :is(th, td) {
+          border-bottom: 1px solid;
+        }
+        .relative {
+          position: relative;
+        }
+        .grid {
+          display: grid;
+        }
+        .flex {
+          display: flex;
+        }
+        .flex-grow {
+          flex-grow: 1;
+        }
+        .align-center {
+          align-items: center;
+        }
+        .justify-between {
+          justify-content: space-between;
+        }
+        .min-w-120 {
+          min-inline-size: 7.5rem;
+        }
+        .max-w-900 {
+          max-inline-size: 56.25rem;
+        }
+        .o-auto {
+          overflow: auto;
+        }
+        .mi-auto {
+          margin-inline: auto;
+        }
+        
+          .gap-0 {
+            gap: 0rem;
+          }
+          .m-0 {
+            margin: 0rem;
+          }
+          .mt-0 {
+            margin-block-start: 0rem;
+          }
+          .mb-0 {
+            margin-block-end: 0rem;
+          }
+          .p-0 {
+            padding: 0rem;
+          }
+          .pb-0 {
+            padding-bottom: 0rem;
+          }
+          .gap-4 {
+            gap: 0.25rem;
+          }
+          .m-4 {
+            margin: 0.25rem;
+          }
+          .mt-4 {
+            margin-block-start: 0.25rem;
+          }
+          .mb-4 {
+            margin-block-end: 0.25rem;
+          }
+          .p-4 {
+            padding: 0.25rem;
+          }
+          .pb-4 {
+            padding-bottom: 0.25rem;
+          }
+          .gap-8 {
+            gap: 0.5rem;
+          }
+          .m-8 {
+            margin: 0.5rem;
+          }
+          .mt-8 {
+            margin-block-start: 0.5rem;
+          }
+          .mb-8 {
+            margin-block-end: 0.5rem;
+          }
+          .p-8 {
+            padding: 0.5rem;
+          }
+          .pb-8 {
+            padding-bottom: 0.5rem;
+          }
+          .gap-12 {
+            gap: 0.75rem;
+          }
+          .m-12 {
+            margin: 0.75rem;
+          }
+          .mt-12 {
+            margin-block-start: 0.75rem;
+          }
+          .mb-12 {
+            margin-block-end: 0.75rem;
+          }
+          .p-12 {
+            padding: 0.75rem;
+          }
+          .pb-12 {
+            padding-bottom: 0.75rem;
+          }
+          .gap-16 {
+            gap: 1rem;
+          }
+          .m-16 {
+            margin: 1rem;
+          }
+          .mt-16 {
+            margin-block-start: 1rem;
+          }
+          .mb-16 {
+            margin-block-end: 1rem;
+          }
+          .p-16 {
+            padding: 1rem;
+          }
+          .pb-16 {
+            padding-bottom: 1rem;
+          }
+          .gap-32 {
+            gap: 2rem;
+          }
+          .m-32 {
+            margin: 2rem;
+          }
+          .mt-32 {
+            margin-block-start: 2rem;
+          }
+          .mb-32 {
+            margin-block-end: 2rem;
+          }
+          .p-32 {
+            padding: 2rem;
+          }
+          .pb-32 {
+            padding-bottom: 2rem;
+          }
+        .b-1 {
+          border: 1px solid;
+        }
+        .rotate {
+          --rotate: 0;
+          transform: rotate(var(--rotate));
+        }
+        .visually-hidden {
+          clip: rect(0 0 0 0);
+          clip-path: inset(50%);
+          height: 1px;
+          overflow: hidden;
+          position: absolute;
+          white-space: nowrap;
+          width: 1px;
+        }
+        .icon {
+          display: inline-block;
+          width: 1em;
+          height: 1em;
+          stroke-width: 0;
+          stroke: currentColor;
+          fill: currentColor;
+        }
+        .card {
+          position: relative;
+          border: 1px solid;
+          border-radius: 0.5rem;
+          padding: .75rem;
+          overflow: hidden;
+        }
+        .card:before {
+          content: '';
+          position: absolute;
+          z-index: -1;
+          inset: 0;
+          opacity: 0.1;
+          background-color: CanvasText;
+        }
+      </style>
+    </head>
+  
+    <body>
+      <main class=\\"max-w-900 mi-auto p-8\\">
+        <h1 class=\\"mb-8\\">Freakin' Fast Forecast</h1>
+
+        <form class=\\"mb-16\\">
+          <label for=\\"location\\">Search Location</label>
+          <div class=\\"flex gap-8\\">
+            <input id=\\"location\\" name=\\"location\\" />
+            <button type=\\"submit\\">Submit</button>
+          </div>
+        </form>
+
+        <p>No weather data for: Pallet Town, Hoenn, Gameboydia</p>
+        </section>
+      </main>
+      <svg aria-hidden=\\"true\\" style=\\"position: absolute; width: 0; height: 0; overflow: hidden;\\" version=\\"1.1\\" xmlns=\\"http://www.w3.org/2000/svg\\" xmlns:xlink=\\"http://www.w3.org/1999/xlink\\">
+      <defs>
+      <symbol id=\\"icon-arrow-long-up\\" viewBox=\\"0 0 20 20\\">
+      <path d=\\"M10 0.75l5.5 5.25h-3.5v13h-4v-13h-3.5l5.5-5.25z\\"></path>
+      </symbol>
+      </defs>
+      </svg>
+    </body>
+  </html>",
+  "deny_reason": "",
+  "headers": {},
+  "status": 200,
+}
+`;
