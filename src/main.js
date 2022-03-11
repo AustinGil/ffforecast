@@ -64,6 +64,8 @@ export async function responseProvider(request) {
     weatherData = await api.oneCall({ lat, lon });
   }
 
+  console.log({ weatherData });
+
   const body = `<!DOCTYPE html>
   <html lang="en">
     <head>

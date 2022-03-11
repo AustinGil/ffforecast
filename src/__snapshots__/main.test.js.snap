@@ -213,7 +213,162 @@ exports[`responseProvider > default UI matches snapshot 1`] = `
           </div>
         </form>
 
-        <p>No weather data for: Pallet Town, Hoenn, Gameboydia</p>
+        <h2 class=\\"grid mb-32\\">Weather for Pallet Town, Hoenn, Gameboydia <br><span class=\\"h6\\">12/17/59, 5:30 PM</span></h2>
+
+            <section class=\\"card mb-32\\">
+              <h3 class=\\"h6 mb-8\\">Current</h3>
+              <p class=\\"flex align-center justify-between m-0\\">
+              <span>
+                <span class=\\"h1\\">[object Object]°F</span>
+                <br>
+                <span>undefined</span>
+              </span>
+              <img src=\\"http://openweathermap.org/img/wn/undefined@2x.png\\" alt=\\"undefined\\" width=\\"100\\" height=\\"100\\"/>
+            </p>
+            <table role=\\"table\\" class=\\"mt-0\\">
+              <tbody role=\\"rowgroup\\">
+                <tr role=\\"row\\">
+                  <th scope=\\"row\\" role=\\"rowheader\\" align=\\"left\\"><span aria-hidden=\\"true\\">🌡</span> Feels Like</th>
+                  <td role=\\"cell\\">undefined°F</td>
+                </tr>
+                <tr role=\\"row\\">
+                  <th scope=\\"row\\" role=\\"rowheader\\" align=\\"left\\"><span aria-hidden=\\"true\\">🌬</span> Wind</th>
+                  <td role=\\"cell\\">
+                  undefined mph
+                  
+                  <svg class=\\"icon icon-arrow-long-up rotate\\" style=\\"--rotate: undefineddeg;\\" aria-hidden=\\"true\\" alt=\\"\\"><use xlink:href=\\"#icon-arrow-long-up\\"></use></svg>
+
+                    undefined
+                  </td>
+                </tr>
+                <tr role=\\"row\\">
+                  <th scope=\\"row\\" role=\\"rowheader\\" align=\\"left\\"><span aria-hidden=\\"true\\">☁</span> Cloudiness</th>
+                  <td role=\\"cell\\">undefined%</td>
+                </tr>
+                <tr role=\\"row\\">
+                  <th scope=\\"row\\" role=\\"rowheader\\" align=\\"left\\"><span aria-hidden=\\"true\\">🕶</span> UV Index</th>
+                  <td role=\\"cell\\">undefined</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class=\\"card mb-32\\">
+            <h3 class=\\"h6 mb-8\\">Hourly</h3>
+            <div class=\\"flex gap-8 o-auto pb-8\\">
+              
+              <div class=\\"min-w-120\\">
+                <small>
+                12/17/59
+                </small>
+                <br>
+                <h4><b>5:30 PM</b></h4>
+                
+                <p class=\\"h5 flex justify-between align-center mt-0\\">
+                  <b>NaN°F</b>
+                  <img
+                    src=\\"http://openweathermap.org/img/wn/undefined@2x.png\\"
+                    alt=\\"undefined\\"
+                    loading=\\"eager\\"
+                    width=\\"64\\"
+                    height=\\"64\\"
+                  />
+                </p>
+
+                <table role=\\"table\\" class=\\"mt-0\\">
+                  <tbody role=\\"rowgroup\\">
+                    <tr role=\\"row\\">
+                      <th scope=\\"row\\" role=\\"rowheader\\" align=\\"left\\">
+                        <span aria-hidden=\\"true\\" title=\\"Cloudiness\\">☁</span>
+                        <span class=\\"visually-hidden\\">Cloudiness</span>
+                      </th>
+                      <td role=\\"cell\\">undefined%</td>
+                    </tr>
+                    <tr role=\\"row\\">
+                      <th scope=\\"row\\" role=\\"rowheader\\" align=\\"left\\">
+                        <span aria-hidden=\\"true\\" title=\\"Precipitation\\">🌧</span>
+                        <span class=\\"visually-hidden\\">Precipitation</span>
+                      </th>
+                      <td role=\\"cell\\">undefined%</td>
+                    </tr>
+                    <tr role=\\"row\\">
+                      <th scope=\\"row\\" role=\\"rowheader\\" align=\\"left\\">
+                        <span aria-hidden=\\"true\\" title=\\"Humidity\\">🥵</span>
+                        <span class=\\"visually-hidden\\">Humidity</span>
+                      </th>
+                      <td role=\\"cell\\">undefined%</td>
+                    </tr>
+                    <tr role=\\"row\\">
+                      <th scope=\\"row\\" role=\\"rowheader\\" align=\\"left\\">
+                        <span aria-hidden=\\"true\\" title=\\"UV Index\\">🕶</span>
+                        <span class=\\"visually-hidden\\">UV Index</span>
+                      </th>
+                      <td role=\\"cell\\">undefined%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section class=\\"card mb-32\\">
+            <h3 class=\\"h6 mb-8\\">Daily</h3>
+            <div class=\\"flex gap-8 o-auto pb-8\\">
+              <div class=\\"flex-grow min-w-120\\">
+                          <h4><b>12/17/59</b></h4>
+
+                          <p class=\\"h5 flex justify-between align-center mt-0\\">
+                            <b>NaN°F</b>
+                            <img
+                              src=\\"http://openweathermap.org/img/wn/undefined@2x.png\\"
+                              alt=\\"undefined\\"
+                              loading=\\"eager\\"
+                              width=\\"64\\"
+                              height=\\"64\\"
+                            />
+                          </p>
+                          <table role=\\"table\\" class=\\"mt-0\\">
+                            <tbody role=\\"rowgroup\\">
+                              <tr role=\\"row\\">
+                                <th scope=\\"row\\" role=\\"rowheader\\" align=\\"left\\">
+                                  <span aria-hidden=\\"true\\" title=\\"High\\">🔺</span>
+                                  <span class=\\"visually-hidden\\">High</span>
+                                </th>
+                                <td role=\\"cell\\">undefined°F</td>
+                              </tr>
+                              <tr role=\\"row\\">
+                                <th scope=\\"row\\" role=\\"rowheader\\" align=\\"left\\">
+                                  <span aria-hidden=\\"true\\" title=\\"Low\\">🔻</span>
+                                  <span class=\\"visually-hidden\\">Low</span>
+                                </th>
+                                <td role=\\"cell\\">undefined°F</td>
+                              </tr>
+                              <tr role=\\"row\\">
+                                <th scope=\\"row\\" role=\\"rowheader\\" align=\\"left\\">
+                                  <span aria-hidden=\\"true\\" title=\\"Cloudiness\\">☁</span>
+                                  <span class=\\"visually-hidden\\">Cloudiness</span>
+                                </th>
+                                <td role=\\"cell\\">undefined%</td>
+                              </tr>
+                              <tr role=\\"row\\">
+                                <th scope=\\"row\\" role=\\"rowheader\\" align=\\"left\\">
+                                  <span aria-hidden=\\"true\\" title=\\"Precipitation\\">🌧</span>
+                                  <span class=\\"visually-hidden\\">Precipitation</span>
+                                </th>
+                                <td role=\\"cell\\">undefined%</td>
+                              </tr>
+                              <tr role=\\"row\\">
+                                <th scope=\\"row\\" role=\\"rowheader\\" align=\\"left\\">
+                                  <span aria-hidden=\\"true\\" title=\\"UV Index\\">🕶</span>
+                                  <span class=\\"visually-hidden\\">UV Index</span>
+                                </th>
+                                <td role=\\"cell\\">undefined°F</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+            </div>
+            
         </section>
       </main>
       <svg aria-hidden=\\"true\\" style=\\"position: absolute; width: 0; height: 0; overflow: hidden;\\" version=\\"1.1\\" xmlns=\\"http://www.w3.org/2000/svg\\" xmlns:xlink=\\"http://www.w3.org/1999/xlink\\">

@@ -1,26 +1,92 @@
-import { vi, describe, test, expect } from 'vitest';
+import { vi, beforeEach, describe, it, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
 import fetch from 'node-fetch';
 import { formatDate, getWindDirection, responseProvider } from './main.js';
 
+var fakeWeatherData;
+
 vi.mock('node-fetch', () => {
+  const fakeDate = 1646956114212;
+  fakeWeatherData = {
+    current: {
+      dt: fakeDate,
+      temp: {
+        date: undefined,
+      },
+      weather: [
+        {
+          description: undefined,
+          icon: undefined,
+        },
+      ],
+      feels_like: undefined,
+      wind_speed: undefined,
+      wind_deg: undefined,
+      clouds: undefined,
+      uvi: undefined,
+    },
+    hourly: [
+      {
+        dt: fakeDate,
+        temp: {
+          date: undefined,
+        },
+        weather: [
+          {
+            description: undefined,
+            icon: undefined,
+          },
+        ],
+        clouds: undefined,
+        pop: undefined,
+        humidity: undefined,
+        uvi: undefined,
+      },
+    ],
+    daily: [
+      {
+        dt: fakeDate,
+        temp: {
+          date: undefined,
+        },
+        weather: [
+          {
+            description: undefined,
+            icon: undefined,
+          },
+        ],
+        clouds: undefined,
+        pop: undefined,
+        uvi: undefined,
+      },
+    ],
+  };
   return {
-    default: vi.fn().mockResolvedValue({
-      json: vi.fn().mockResolvedValue({
-        favoriteAnimal: faker.animal.dog(),
+    default: vi
+      .fn()
+      .mockResolvedValueOnce({
+        json: vi.fn().mockResolvedValue({
+          features: [{ properties: { lat: 0, lon: 0 } }],
+        }),
+      })
+      .mockResolvedValue({
+        json: vi.fn().mockResolvedValue(fakeWeatherData),
       }),
-    }),
   };
 });
 
-describe('formatDate', () => {
+beforeEach(() => {
+  fetch.mockClear();
+});
+
+describe.concurrent('formatDate', () => {
   const randomDate = faker.date.recent();
 
-  test.concurrent('it returns a date in M/D/YYYY', () => {
+  it('returns a date in M/D/YYYY', () => {
     const formatted = formatDate(randomDate);
     expect(formatted).toBe(randomDate.toLocaleDateString());
   });
-  test.concurrent('it accepts a Date, number, or string', () => {
+  it('accepts a Date, number, or string', () => {
     const dateDate = new Date(randomDate);
     expect(formatDate(dateDate)).toBe(randomDate.toLocaleDateString());
     const numberDate = Number(randomDate);
@@ -28,7 +94,7 @@ describe('formatDate', () => {
     const stringDate = String(randomDate);
     expect(formatDate(stringDate)).toBe(randomDate.toLocaleDateString());
   });
-  test.concurrent('it works with Intl.DateTimeFormatOptions', () => {
+  it('works with Intl.DateTimeFormatOptions', () => {
     /** @type {Intl.DateTimeFormatOptions} */
     const options = {
       dateStyle: 'short',
@@ -41,36 +107,36 @@ describe('formatDate', () => {
   });
 });
 
-describe('getWindDirection', () => {
-  test.concurrent('returns NE for North-East degree range', () => {
+describe.concurrent('getWindDirection', () => {
+  it('returns NE for North-East degree range', () => {
     expect(getWindDirection(23)).toBe('NE');
     expect(getWindDirection(67)).toBe('NE');
   });
-  test.concurrent('returns E for East degree range', () => {
+  it('returns E for East degree range', () => {
     expect(getWindDirection(68)).toBe('E');
     expect(getWindDirection(112)).toBe('E');
   });
-  test.concurrent('returns SE for South-East degree range', () => {
+  it('returns SE for South-East degree range', () => {
     expect(getWindDirection(113)).toBe('SE');
     expect(getWindDirection(157)).toBe('SE');
   });
-  test.concurrent('returns S for South degree range', () => {
+  it('returns S for South degree range', () => {
     expect(getWindDirection(158)).toBe('S');
     expect(getWindDirection(202)).toBe('S');
   });
-  test.concurrent('returns SW for South-West degree range', () => {
+  it('returns SW for South-West degree range', () => {
     expect(getWindDirection(203)).toBe('SW');
     expect(getWindDirection(247)).toBe('SW');
   });
-  test.concurrent('returns W for West degree range', () => {
+  it('returns W for West degree range', () => {
     expect(getWindDirection(248)).toBe('W');
     expect(getWindDirection(292)).toBe('W');
   });
-  test.concurrent('returns NW for North-West degree range', () => {
+  it('returns NW for North-West degree range', () => {
     expect(getWindDirection(293)).toBe('NW');
     expect(getWindDirection(337)).toBe('NW');
   });
-  test.concurrent('returns N for North degree range', () => {
+  it('returns N for North degree range', () => {
     expect(getWindDirection(338)).toBe('N');
     expect(getWindDirection(22)).toBe('N');
   });
@@ -92,7 +158,56 @@ describe('responseProvider', () => {
     },
   };
 
-  test.concurrent('returns a valid response object', async () => {
+  it('gets the API keys from the env variables', async () => {
+    await responseProvider(fakeRequestObject);
+    expect(fakeRequestObject.getVariable).toBeCalledWith(
+      'PMUSER_OPENWEATHER_API_KEY'
+    );
+    expect(fakeRequestObject.getVariable).toBeCalledWith(
+      'PMUSER_GEOAPIFY_API_KEY'
+    );
+  });
+  it('gets the geolocation from geoappify', async () => {
+    await responseProvider(fakeRequestObject);
+
+    const mockedVariableResults = fakeRequestObject.getVariable.mock.results;
+    const GEOAPIFY_API_KEY = mockedVariableResults[1].value;
+    const { city, region, country } = fakeRequestObject.userLocation;
+
+    const query = new URLSearchParams({
+      text: `${city}, ${region}, ${country}`,
+      apiKey: GEOAPIFY_API_KEY,
+    });
+    expect(fetch).toBeCalledWith(
+      `https://api.geoapify.com/v1/geocode/search?${query.toString()}`
+    );
+  });
+  it('gets the weather data if we have a geolocation', async () => {
+    const latLon = { lat: '', lon: '' };
+    fetch.mockResolvedValueOnce({
+      async json() {
+        return {
+          features: [{ properties: latLon }],
+        };
+      },
+    });
+
+    await responseProvider(fakeRequestObject);
+
+    const mockedVariableResults = fakeRequestObject.getVariable.mock.results;
+    const PMUSER_OPENWEATHER_API_KEY = mockedVariableResults[0].value;
+
+    const query = new URLSearchParams({
+      units: 'imperial',
+      lat: latLon.lat,
+      lon: latLon.lon,
+      appid: PMUSER_OPENWEATHER_API_KEY,
+    });
+    expect(fetch).toBeCalledWith(
+      `https://api.openweathermap.org/data/2.5/onecall?${query.toString()}`
+    );
+  });
+  it('returns a valid response object', async () => {
     const response = await responseProvider(fakeRequestObject);
     expect(typeof response.body).toBe('string');
     expect(response).toMatchObject({
@@ -101,7 +216,23 @@ describe('responseProvider', () => {
       deny_reason: '',
     });
   });
-  test.concurrent('default UI matches snapshot', async () => {
+  it('UI without weather data matches snapshot', async () => {
+    fetch.mockResolvedValueOnce({
+      json: vi.fn().mockResolvedValue({}),
+    });
+    const response = await responseProvider({
+      ...fakeRequestObject,
+      userLocation: {
+        country: 'Gameboydia',
+        region: 'Hoenn',
+        city: 'Pallet Town',
+        zipCode: '12345',
+        continent: 'Kanto',
+      },
+    });
+    expect(response).toMatchSnapshot();
+  });
+  it.only('default UI matches snapshot', async () => {
     const response = await responseProvider({
       ...fakeRequestObject,
       userLocation: {
