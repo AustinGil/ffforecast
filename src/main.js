@@ -84,7 +84,7 @@ export async function responseProvider(request) {
       <meta name="viewport" content="width=device-width,initial-scale=1" />
       <title>Freakin' Fast Forecast</title>
       <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text x='0' y='14'>🌦</text></svg>">
-      <link rel="stylesheet" type="text/css" href="https://unpkg.com/bedrocss">
+      <link rel="stylesheet" type="text/css" href="https://unpkg.com/bedrocss@0.0.19/bedrocss.min.css">
       <style>
         th, td {
           padding: 0.25rem;
@@ -152,12 +152,12 @@ export async function responseProvider(request) {
           border: 1px solid;
         }
         ${[64, 96]
-      .map((size) => {
-        return `.size-${size} {
+    .map((size) => {
+      return `.size-${size} {
             font-size: ${size / 16}rem;
           }`;
-      })
-      .join('')}
+          })
+    .join('')}
         .rotate {
           --rotate: 0;
           transform: rotate(var(--rotate));
