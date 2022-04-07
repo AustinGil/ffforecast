@@ -2,7 +2,7 @@
   "name": "weather-app",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=test nodemon server.js",
+    "dev": "nodemon server.js",
     "test": "vitest",
     "coverage": "vitest run --coverage",
     "cy": "concurrently \"NODE_ENV=test npm run dev\" \"cypress open\""
